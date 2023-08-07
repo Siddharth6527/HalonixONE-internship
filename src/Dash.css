@@ -22,16 +22,17 @@
 
 .gradient {
   /* #343564 */
+  /* #000073 */
 
-  background: #343564;
-  background: linear-gradient(158deg, #343564 30%, #343564 60%);
+  background: #000073;
+  background: linear-gradient(158deg, #000073 30%, #000073 60%);
 }
 
 .gradientlight {
   /* background: rgba(53, 138, 148);
   background: linear-gradient(158deg, #26255d 40%, #f49701 100%); */
-  background: #343564;
-  background: linear-gradient(158deg, #343564 30%, #343564 60%);
+  background: #000073;
+  background: linear-gradient(158deg, #000073 30%, #000073 60%);
 }
 
 .bgcolor {

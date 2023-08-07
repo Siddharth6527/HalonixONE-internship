@@ -9,8 +9,6 @@ import AccordionDash from "../../components/Dashboard/AccordionDash";
 import BarChart from "../../charts/Barcharts";
 import CountUp from "react-countup";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-// For calendar
-import Calendar from "../../components/Dashboard/Calendar";
 
 const Home = () => {
   return (
@@ -28,7 +26,7 @@ const Home = () => {
                     sx={{
                       minWidth: 49 + "%",
                       height: 150,
-                      borderRadius: "15" + "px",
+                      borderRadius: 5,
                     }}
                     className="gradient"
                   >
@@ -42,13 +40,6 @@ const Home = () => {
                         component="div"
                         sx={{ color: "#ffffff" }}
                       >
-                        {/* <CountUp
-                          delay={0.4}
-                          end={500}
-                          duration={0.6}
-                          decimals={2}
-                          decimal="."
-                        /> */}
                         <CountUp
                           delay={0.4}
                           end={5.2}
@@ -72,7 +63,7 @@ const Home = () => {
                     sx={{
                       minWidth: 49 + "%",
                       height: 150,
-                      borderRadius: "15" + "px",
+                      borderRadius: 5,
                     }}
                     className="gradientlight"
                   >
@@ -87,13 +78,6 @@ const Home = () => {
                         component="div"
                         sx={{ color: "#ffffff" }}
                       >
-                        {/* <CountUp
-                          delay={0.4}
-                          end={900}
-                          duration={0.6}
-                          decimals={2}
-                          decimal="."
-                        /> */}
                         <CountUp
                           delay={0.4}
                           end={1.5}
@@ -118,7 +102,7 @@ const Home = () => {
               <Grid item xs={4}>
                 <Stack spacing={2}>
                   <Card
-                    sx={{ minWidth: 345, borderRadius: "15" + "px" }}
+                    sx={{ minWidth: 345, borderRadius: 5 }}
                     className="gradientlight"
                   >
                     <Stack spacing={2} direction="row">
@@ -126,20 +110,18 @@ const Home = () => {
                         <StorefrontIcon />
                       </div>
                       <div className="paddingall">
-                        {/* <span className="pricetitle">$203K</span> */}
                         <span className="pricetitle white">Prism Bulb 9W</span>
                         <br />
                         <span className="pricesubtitle white">Online</span>
                       </div>
                     </Stack>
                   </Card>
-                  <Card sx={{ minWidth: 345, borderRadius: "15" + "px" }}>
+                  <Card sx={{ minWidth: 345, borderRadius: 5 }}>
                     <Stack spacing={2} direction="row">
                       <div className="iconstyleblack">
                         <StorefrontIcon />
                       </div>
                       <div className="paddingall">
-                        {/* <span className="pricetitle">$203K</span> */}
                         <span className="pricetitle">Halonix CCTV Camera</span>
                         <br />
                         <span className="pricesubtitle">Offline</span>
@@ -162,12 +144,9 @@ const Home = () => {
                 <Card sx={{ height: 60 + "vh" }}>
                   <CardContent>
                     <div className="paddingall">
-                      <span className="" pricetitle>
-                        FAQs
-                      </span>
+                      <span className="pricetitle">FAQs</span>
                     </div>
                     <AccordionDash />
-                    {/* <Calendar /> */}
                   </CardContent>
                 </Card>
               </Grid>

@@ -8,8 +8,6 @@ import { useNavigate } from "react-router-dom";
 
 import useInput from "../../hooks/use-input";
 
-const url = "https://halonix-one.onrender.com/";
-
 const emailCheck = (val) => {
   return val.trim().includes("@") && val.trim().length > 6;
 };
@@ -42,7 +40,7 @@ export default function EmailModal(props) {
   } = useInput(emailCheck);
 
   const sendingEmailToAPI = async (userName) => {
-    const response = await fetch(url + "v1/auth/forgotpassword", {
+    const response = await fetch(process.env.REACT_APP_URL + "/v1/auth/forgotpassword", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

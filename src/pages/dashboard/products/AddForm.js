@@ -3,64 +3,62 @@ import Typography from "@mui/material/Typography";
 import { IconButton, Grid, Box, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import TextField from "@mui/material/TextField";
-import { MenuItem } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-// import { db } from "../../firebase-config";
 
-export default function AddForm({ closeEvent }) {
+const token = localStorage.getItem("token");
+
+export default function AddForm({ closeEvent, setModalOpen }) {
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [category, setCategory] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
 
-  const handlePriceChange = (event) => {
-    setPrice(event.target.value);
+  const handleUserNameChange = (event) => {
+    setUserName(event.target.value);
   };
 
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value);
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
   };
 
-  // const createUser = async () => {
-  //   await addDoc(empCollectionRef, {
-  //     name: name,
-  //     price: Number(price),
-  //     category: category,
-  //     date: String(new Date()),
-  //   });
-  //   getSuggestedQuery;
-  // };
+  const sendingAddUserRequest = async () => {
+    var myHeaders = new Headers();
 
-  const currencies = [
-    {
-      value: "Mobile",
-      label: "Mobile",
-    },
-    {
-      value: "Laptop",
-      label: "Laptop",
-    },
-    {
-      value: "Electronics",
-      label: "Electronics",
-    },
-    {
-      value: "Food",
-      label: "Food",
-    },
-  ];
+    myHeaders.append("Content-Type", "application/json");
+
+    myHeaders.append("Authorization", token);
+
+    const response = await fetch(process.env.REACT_APP_URL + "/api/v1/admin/user", {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify({
+        name: name,
+        user_name: userName,
+        password: password,
+      }),
+    });
+
+    const res = await response.json();
+    // if(res.status==='401'){
+
+    // }
+    console.log(res);
+  };
+
+  const buttonClickHandler = () => {
+    if (name && userName && password) {
+      sendingAddUserRequest();
+      setModalOpen(false);
+    }
+  };
 
   return (
     <>
       <Box />
       <Typography variant="h5" align="center">
-        Add Product
+        Add User
       </Typography>
       <IconButton
         style={{ position: "absolute", top: "0", right: "0" }}
@@ -76,51 +74,40 @@ export default function AddForm({ closeEvent }) {
             label="Name"
             variant="outlined"
             size="small"
+            type="text"
             value={name}
             onChange={handleNameChange}
             sx={{ minWidth: 100 + "%" }}
           ></TextField>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <TextField
             id="outlined-basic"
-            label="Price"
+            label="User Name"
             variant="outlined"
             size="small"
-            type="number"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <CurrencyRupeeIcon />
-                </InputAdornment>
-              ),
-            }}
-            value={price}
-            onChange={handlePriceChange}
+            value={userName}
+            onChange={handleUserNameChange}
             sx={{ minWidth: 100 + "%" }}
           ></TextField>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <TextField
             id="outlined-basic"
-            label="Category"
-            select
+            label="Password"
             variant="outlined"
             size="small"
-            onChange={handleCategoryChange}
-            value={category}
+            value={password}
+            onChange={handlePasswordChange}
             sx={{ minWidth: 100 + "%" }}
-          >
-            {currencies.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+          ></TextField>
         </Grid>
+
         <Grid item xs={12}>
           <Typography variant="h5" align="center">
-            <Button variant="contained">Submit</Button>
+            <Button onClick={buttonClickHandler} variant="contained">
+              Submit
+            </Button>
           </Typography>
         </Grid>
       </Grid>

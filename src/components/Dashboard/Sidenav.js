@@ -16,6 +16,8 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "../../appStore";
+import HomeIcon from "@mui/icons-material/Home";
+import PeopleIcon from "@mui/icons-material/People";
 
 const drawerWidth = 240;
 
@@ -89,35 +91,62 @@ export default function Sidenav() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Home", "About", "Settings", "Analytics", "Products"].map(
-            (text, index) => (
-              <ListItem
-                key={text}
-                disablePadding
-                sx={{ display: "block" }}
-                onClick={() => navigate(`/${text}`)}
+          {/* {["Home", "User", "About", "Settings", "Analytics"].map(
+            (text, index) => ( */}
+          <ListItem
+            key={"Home"}
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => navigate(`/Home`)}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
               >
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            )
-          )}
+                <HomeIcon />
+                {/* {index % 2 === 0 ? <HomeIcon /> : <PeopleIcon />} */}
+              </ListItemIcon>
+              <ListItemText primary={"Home"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            key={"Users"}
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => navigate("/Users")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <PeopleIcon />
+                {/* {index % 2 === 0 ? <HomeIcon /> : <PeopleIcon />} */}
+              </ListItemIcon>
+              <ListItemText primary={"Users"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          {/* )
+          )} */}
         </List>
         <Divider />
         <List>

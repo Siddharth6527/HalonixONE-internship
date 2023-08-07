@@ -16,6 +16,11 @@ import { useState } from "react";
 import EmailModal from "./EmailModal";
 import MuiAlert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import HalonixLogo from "../../Assets/LoginPage/Halonix logo.jpeg";
+import classes from "./LoginPage.module.css";
+import InnovationText from "../../Assets/LoginPage/innovation-text.png";
+import BulbImage from "../../Assets/LoginPage/pexels-pixabay-266688-removebg-preview.png";
+import { useRequest } from "../../hooks/use-request";
 
 const lengthCheck = (val) => {
   return val.trim().length >= 6;
@@ -46,17 +51,16 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function NewLoginPage() {
-  let url = "https://halonix-one.onrender.com/";
   const [errorMessage, setErrorMessage] = useState({
     status: "",
     message: "",
   });
-  // let loginData;
+
   let res = undefined;
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const navigate = useNavigate();
   let isFormValid = false;
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const {
     value: enteredEmail,
@@ -73,7 +77,7 @@ export default function NewLoginPage() {
   } = useInput(lengthCheck);
 
   const SendingLoginRequest = async (props) => {
-    const response = await fetch(url + "v1/auth/login", {
+    const response = await fetch(process.env.REACT_APP_URL + "/v1/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,12 +90,19 @@ export default function NewLoginPage() {
     const { accesstoken, description } = res;
 
     if (res.status === "failure") {
-      console.log(res.description);
-      setErrorMessage({ status: "error", message: res.description });
+      setErrorMessage({ status: "error", message: description });
       setIsSnackbarOpen(true);
     }
-    if (res.status === "success") {
-      // setAlert(true);
+
+    if (res.user.role !== "admin") {
+      setErrorMessage({
+        status: "error",
+        message: "Only Admins are allowed to Login",
+      });
+      setIsSnackbarOpen(true);
+    }
+
+    if (res.status === "success" && res.user.role === "admin") {
       setIsSnackbarOpen(true);
       setErrorMessage({
         status: res.status,
@@ -103,7 +114,6 @@ export default function NewLoginPage() {
       localStorage.setItem("token", accesstoken);
     }
     console.log(res);
-    console.log(description);
   };
 
   if (enteredEmailIsValid && enteredPasswordIsValid) {
@@ -129,81 +139,127 @@ export default function NewLoginPage() {
       {isModalOpen && (
         <EmailModal modalOpen={isModalOpen} setModalOpen={setIsModalOpen} />
       )}
-      <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
+      <div className={classes["gradient-background"]}>
+        <ThemeProvider theme={defaultTheme}>
+          <Box height={30} />
+          <img src={BulbImage} className={classes["bulb-img"]} alt="" />
+          <img
+            src={InnovationText}
+            className={classes["innovation-text-img"]}
+            alt="halonix-innovation-text"
+          />
+
+          <Container
             sx={{
-              marginTop: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
+              background: "#ffffff",
+              padding: 10,
+              pt: 7,
+              borderRadius: 5,
             }}
+            component="main"
+            maxWidth="xs"
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              noValidate
-              sx={{ mt: 1 }}
+            <Grid
+              container
+              spacing={2}
+              display="flex"
+              flexDirection="column"
+              alignItems={"center"}
+              sx={{ maxHeight: 10, pb: 5, borderRadius: 10 + "px" }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                type="email"
-                value={enteredEmail}
-                onBlur={enteredEmailBlurHandler}
-                onChange={enteredEmailChangeHandler}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={enteredPassword}
-                onChange={enteredPasswordChangeHandler}
-                onBlur={enteredPasswordBlurHandler}
-              />
-              <Button
-                disabled={!isFormValid}
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+              <img src={HalonixLogo} alt="" />
+            </Grid>
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Avatar sx={{ m: 1, mb: 2, bgcolor: "secondary.main" }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Sign in
+              </Typography>
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                noValidate
+                sx={{ mt: 1 }}
               >
-                Sign In
-              </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link
-                    sx={{ cursor: "pointer" }}
-                    onClick={forgotPasswordClickHandler}
-                    variant="body2"
-                  >
-                    Forgot password?
-                  </Link>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  type="email"
+                  value={enteredEmail}
+                  onBlur={enteredEmailBlurHandler}
+                  onChange={enteredEmailChangeHandler}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={enteredPassword}
+                  onChange={enteredPasswordChangeHandler}
+                  onBlur={enteredPasswordBlurHandler}
+                />
+                <Button
+                  disabled={!isFormValid}
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 5, mb: 2 }}
+                >
+                  Sign In
+                </Button>
+                <Grid container>
+                  <Grid item xs>
+                    <Link
+                      sx={{ cursor: "pointer" }}
+                      onClick={forgotPasswordClickHandler}
+                      variant="body2"
+                    >
+                      Forgot password?
+                    </Link>
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Box>
             </Box>
-          </Box>
-          <Copyright sx={{ mt: 8, mb: 4 }} />
-        </Container>
-      </ThemeProvider>
+            <Copyright sx={{ mt: 8, mb: 4 }} />
+          </Container>
+        </ThemeProvider>
+        <div>
+          <Typography
+            className={classes["halonix-text"]}
+            variant="h1"
+            color="white"
+          >
+            Halonix
+          </Typography>
+          <Typography
+            className={classes["one-text"]}
+            variant="h2"
+            color="white"
+          >
+            ONE
+          </Typography>
+        </div>
+      </div>
+
       {isSnackbarOpen && (
         <Snackbar
           open={isSnackbarOpen}

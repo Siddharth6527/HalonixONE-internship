@@ -8,7 +8,7 @@ import PasswordChanged from "./components/Email Verification/Password Changed/Pa
 import Home from "./pages/dashboard/Home";
 import About from "./pages/dashboard/About";
 import Settings from "./pages/dashboard/Settings";
-import Products from "./pages/dashboard/Products";
+import Users from "./pages/dashboard/Users";
 
 function App() {
   const router = createBrowserRouter([
@@ -45,8 +45,8 @@ function App() {
           element: <Settings />,
         },
         {
-          path: "products",
-          element: <Products />,
+          path: "Users",
+          element: <Users />,
         },
       ],
     },

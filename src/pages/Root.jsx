@@ -9,10 +9,8 @@ export default function RootLayout() {
       !localStorage.getItem("token") ||
       localStorage.getItem("token") === undefined
     ) {
-      console.log("Token is not available");
       navigate("/login");
     } else {
-      console.log("Token is available");
       navigate("/home");
     }
   }, []);
