@@ -2,7 +2,7 @@ import React from "react";
 import Sidenav from "../../components/Dashboard/Sidenav";
 import { Box } from "@mui/material";
 import Navbar from "../../components/Dashboard/Navbar";
-import UserList from "./products/UserList";
+import UserList from "./users/UserList";
 
 const Users = () => {
   return (

@@ -20,7 +20,8 @@ import HalonixLogo from "../../Assets/LoginPage/Halonix logo.jpeg";
 import classes from "./LoginPage.module.css";
 import InnovationText from "../../Assets/LoginPage/innovation-text.png";
 import BulbImage from "../../Assets/LoginPage/pexels-pixabay-266688-removebg-preview.png";
-import { useRequest } from "../../hooks/use-request";
+import useAxios from "../../hooks/use-axios";
+import { useEffect } from "react";
 
 const lengthCheck = (val) => {
   return val.trim().length >= 6;
@@ -50,17 +51,17 @@ function Copyright(props) {
 
 const defaultTheme = createTheme();
 
-export default function NewLoginPage() {
+export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState({
     status: "",
     message: "",
   });
-
-  let res = undefined;
+  const [loading, setLoading] = useState(false);
   let isFormValid = false;
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const Axios = useAxios();
 
   const {
     value: enteredEmail,
@@ -76,46 +77,6 @@ export default function NewLoginPage() {
     inputBlurHandler: enteredPasswordBlurHandler,
   } = useInput(lengthCheck);
 
-  const SendingLoginRequest = async (props) => {
-    const response = await fetch(process.env.REACT_APP_URL + "/v1/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(props),
-    });
-
-    res = await response.json();
-    isFormValid = false;
-    const { accesstoken, description } = res;
-
-    if (res.status === "failure") {
-      setErrorMessage({ status: "error", message: description });
-      setIsSnackbarOpen(true);
-    }
-
-    if (res.user.role !== "admin") {
-      setErrorMessage({
-        status: "error",
-        message: "Only Admins are allowed to Login",
-      });
-      setIsSnackbarOpen(true);
-    }
-
-    if (res.status === "success" && res.user.role === "admin") {
-      setIsSnackbarOpen(true);
-      setErrorMessage({
-        status: res.status,
-        message: res.description,
-      });
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
-      localStorage.setItem("token", accesstoken);
-    }
-    console.log(res);
-  };
-
   if (enteredEmailIsValid && enteredPasswordIsValid) {
     isFormValid = true;
   }
@@ -124,10 +85,45 @@ export default function NewLoginPage() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    SendingLoginRequest({ user_name: enteredEmail, password: enteredPassword });
+    setLoading(true);
+    await Axios({
+      method: "POST",
+      url: "/v1/auth/login",
+      data: {
+        user_name: enteredEmail,
+        password: enteredPassword,
+      },
+    })
+      .then((res) => {
+        if (res.data.user.role === "admin") {
+          setErrorMessage({
+            status: "success",
+            message: res.data.description,
+          });
+          setIsSnackbarOpen(true);
+          setTimeout(() => {
+            navigate("/home");
+          }, 3000);
+          localStorage.setItem("token", res.data.accesstoken);
+        } else {
+          setErrorMessage({
+            status: "error",
+            message: "Only admin is allowed to login",
+          });
+          setIsSnackbarOpen(true);
+        }
+      })
+      .catch((err) => {
+        console.log("error", err.response.data.description);
+        setErrorMessage({
+          status: "error",
+          message: err.response.data.description,
+        });
+        setIsSnackbarOpen(true);
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleClose = () => {
@@ -218,13 +214,13 @@ export default function NewLoginPage() {
                   onBlur={enteredPasswordBlurHandler}
                 />
                 <Button
-                  disabled={!isFormValid}
+                  disabled={!isFormValid || loading}
                   type="submit"
                   fullWidth
                   variant="contained"
                   sx={{ mt: 5, mb: 2 }}
                 >
-                  Sign In
+                  {loading ? "Loading.." : "Sign In"}
                 </Button>
                 <Grid container>
                   <Grid item xs>
@@ -272,7 +268,7 @@ export default function NewLoginPage() {
             severity={errorMessage.status}
             sx={{ width: "100%" }}
           >
-            {errorMessage.message}
+            {errorMessage.message ? errorMessage.message : "Try Again"}
           </Alert>
         </Snackbar>
       )}
